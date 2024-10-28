@@ -12,3 +12,6 @@ export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
 
 bin/hadoop com.sun.tools.javac.Main WordCount.java
 jar cf wc.jar WordCount*.class
+
+hadoop jar /home/codegyani/wordcountdemo.jar com.javatpoint.WC_Runner /test/data.txt /r_output
+bin/hadoop jar wc.jar WordCount /user/joe/wordcount/input /user/joe/wordcount/output
