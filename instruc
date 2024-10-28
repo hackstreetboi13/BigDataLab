@@ -1,5 +1,8 @@
 https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
 
+sbin/start-yarn.sh
+sbin/start-dfs.sh
+
 http://localhost:50070/
 
 export JAVA_HOME=/usr/java/default
