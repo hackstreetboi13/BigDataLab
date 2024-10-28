@@ -18,3 +18,4 @@ bin/hadoop jar wc.jar WordCount /user/joe/wordcount/input /user/joe/wordcount/ou
 
 
 ------------------Exercise - Weather----------------------
+
