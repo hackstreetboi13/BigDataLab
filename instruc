@@ -18,4 +18,5 @@ bin/hadoop jar wc.jar WordCount /user/joe/wordcount/input /user/joe/wordcount/ou
 
 
 ------------------Exercise - Weather----------------------
+hdfs dfs -put /home/dikshant/Downloads/CRND0103-2020-AK_Fairbanks_11_NE.txt /
 
