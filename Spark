@@ -1,0 +1,25 @@
+In [1]: import pyspark as spark
+
+In [2]: sc spark. SparkContext()
+
+24/10/14 13:49:44 WARN Utils: Your hostname, HP-Victus resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instea (on interface lo)
+
+24/10/14 13:49:44 WARN Utils: Set SPARK LOCAL IP if you need to bind to another address Setting default log level to "WARN"
+
+To adjust logging level use sc.setLogLevel (newLevel). For SparkR, use setLogLevel (newLevel). 24/10/14 13:49:45 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform. using builtin-java classes where applicable
+
+Word Count
+
+In [3]: with open('words.txt', 'w') as f:
+
+text="Install spark and pyspark (ubuntu only). Run a spark shell and test the installation.
+
+Run the wordcount program that you did using hadoop using pyspark. Use the movielens dataset available in the LMS theory page and
+
+try to find out for each movie, how are the ratings distributed.. f.write(text)
+
+The counts contains the text from text file split into words and converted into a tuple of (word, count) format and then reduced to give the count of each word.
+
+In [4]: text file sc.textFile("words.txt")
+
+counts = text file. flatMap(lambda line: Line.split(" ")) map(lambda word: (word, 1)) reduceByKey (La
