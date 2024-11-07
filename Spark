@@ -1,25 +1,78 @@
-In [1]: import pyspark as spark
+sc=sparl.SparkContext()
+friends=sc.textFile("")
+age_grp = friends.map(lambda x: x.split(',')[2:4]) \
+    .map(lambda x: (int(x[0]), int(x[1]))) \
+    .groupByKey() \
+    .mapValues(lambda x: round(sum(x) / len(x), 2)) \
+    .sortByKey()
+for age,avg in age_avg.collect():
+  print(f"Age: {age} \t Average Friends:{avg}")
 
-In [2]: sc spark. SparkContext()
+--------------------------------------------------------------
+lines = sc.textFile('temp.csv')
+header = lines.first()
+lines = lines.filter(lambda line: line != header) \
+             .map(lambda line: line.split(',')) \
+             .map(lambda line: (line[0], line[1], line[2], int(line[3])))
+minTemp = lines.filter(lambda x: "TMIN" in x[2])
+minOverall = minTemp.map(lambda x: x[-1]).min()
+print(f"Min. Temp Overall: {minOverall}")
+minItemID = minTemp.map(lambda x: (x[0], x[3])).reduceByKey(lambda x, y: min(x, y))
+for item,temp in minItemID.collect():
+  print(f"ItemID:{item}\t Temp:{temp}")   
+minStationID = minTemp.map(lambda x: (x[1], x[3])).reduceByKey(lambda x, y: min(x, y))
 
-24/10/14 13:49:44 WARN Utils: Your hostname, HP-Victus resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instea (on interface lo)
+maxTemp = lines.filter(lambda x: "TMAX" in x[2])
+maxOverall = maxTemp.map(lambda x: x[-1]).max()
+print(f"Max. Temp Overall: {maxOverall}")
+maxItemID = maxTemp.map(lambda x: (x[0], x[3])).reduceByKey(lambda x, y: max(x, y))
+maxStationID = maxTemp.map(lambda x: (x[1], x[3])).reduceByKey(lambda x, y: max(x, y))
 
-24/10/14 13:49:44 WARN Utils: Set SPARK LOCAL IP if you need to bind to another address Setting default log level to "WARN"
+---------------------------------------------------------------------
+text_file = sc.textFile("words.txt")
+counts = text_file.flatMap(lambda line: line.split(" ")) \
+                  .map(lambda word: (word, 1)) \
+                  .reduceByKey(lambda a, b: a + b)
+output = counts.collect()
 
-To adjust logging level use sc.setLogLevel (newLevel). For SparkR, use setLogLevel (newLevel). 24/10/14 13:49:45 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform. using builtin-java classes where applicable
+------------------------------------------------------------------
+movies_grp=movies.map(lambda x:x.split('\t')).groupby(lambda x: (x[1],x[2])).mapvalues(len).collect
+------------------------------------------------------------------------
+from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType, StructField, IntegerType, FloatType, LongType
+from pyspark.sql.functions import col, count
+spark = SparkSession.builder \
+    .appName("Movie Ratings Analysis") \
+    .getOrCreate()
+schema = StructType([
+    StructField("movie_id", IntegerType(), True),
+    StructField("user_id", IntegerType(), True),
+    StructField("rating", FloatType(), True),
+    StructField("timestamp", LongType(), True)
+])
 
-Word Count
+df = spark.read.csv("u.data", schema=schema, sep='\t', header=False)
+five_star_movies = df.filter(col("rating") == 5)
+popular_movies = five_star_movies.groupBy("movie_id") \
+    .agg(count("rating").alias("rating_count")) \
+    .orderBy(col("rating_count").desc()) \
+    .limit(10)
 
-In [3]: with open('words.txt', 'w') as f:
+print("Top 10 Most Popular Movies:")
+popular_movies.show()
 
-text="Install spark and pyspark (ubuntu only). Run a spark shell and test the installation.
+active_users = df.groupBy("user_id") \
+    .agg(count("rating").alias("rating_count")) \
+    .orderBy(col("rating_count").desc()) \
+    .limit(10)
 
-Run the wordcount program that you did using hadoop using pyspark. Use the movielens dataset available in the LMS theory page and
 
-try to find out for each movie, how are the ratings distributed.. f.write(text)
+print("Top 10 Most Active Users:")
+active_users.show()
 
-The counts contains the text from text file split into words and converted into a tuple of (word, count) format and then reduced to give the count of each word.
 
-In [4]: text file sc.textFile("words.txt")
+spark.stop()
+----------------------------------------------------------------------
 
-counts = text file. flatMap(lambda line: Line.split(" ")) map(lambda word: (word, 1)) reduceByKey (La
+
+
